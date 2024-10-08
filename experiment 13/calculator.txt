@@ -33,4 +33,4 @@ IF OPERATOR IN ('+', '-', '*', '/') THEN
   DBMS_OUTPUT.PUT_LINE('Result: ' || num1 || ' ' || operator || ' ' || num2 || ' = ' || result);
 END IF;
 END;
-/
+
