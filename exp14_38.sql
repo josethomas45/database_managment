@@ -108,11 +108,59 @@ BEGIN
 END;
 /
 
-INSERT INTO customer_details VALUES(4, 'Alice', 'Wonderland');
+INSERT INTO customer_details VALUES(5, 'mini', 'lasvegas');
+INSERT INTO customer_details VALUES(6, 'mia', 'lasvegas');
+INSERT INTO customer_details VALUES(7, 'miki', 'lasvegas');
 SELECT * FROM cust_count;
 
-DELETE FROM customer_details WHERE custid = 3;
+DELETE FROM customer_details WHERE custid = 6;
 SELECT * FROM cust_count;
+
+
+CREATE TABLE deleted (
+    emp_id INT,
+    empname VARCHAR(20),
+    salary INT,
+    deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE updated (
+    emp_id INT,
+    old_empname VARCHAR(20),
+    new_empname VARCHAR(20),
+    old_salary INT,
+    new_salary INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE OR REPLACE TRIGGER trg_insert_deleted
+AFTER DELETE ON employee_details
+FOR EACH ROW
+BEGIN
+    INSERT INTO deleted (emp_id, empname, salary)
+    VALUES (:OLD.emp_id, :OLD.empname, :OLD.salary);
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_insert_updated
+AFTER UPDATE ON employee_details
+FOR EACH ROW
+BEGIN
+    INSERT INTO updated (emp_id, old_empname, new_empname, old_salary, new_salary)
+    VALUES (:OLD.emp_id, :OLD.empname, :NEW.empname, :OLD.salary, :NEW.salary);
+END;
+/
+
+
+DELETE FROM employee_details WHERE emp_id = 1;
+SELECT * FROM deleted;
+
+
+UPDATE employee_details SET empname = 'John Doe', salary = 35000 WHERE emp_id = 2;
+SELECT * FROM updated;
+
 
 
 
